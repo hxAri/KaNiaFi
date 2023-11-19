@@ -15,4 +15,5 @@
 
 org.hxari.nifi.kaniafi.processor.KaNiaFiBranching
 org.hxari.nifi.kaniafi.processor.KaNiaFiExtract
+org.hxari.nifi.kaniafi.processor.KaNiaFiExtractUser
 org.hxari.nifi.kaniafi.processor.KaNiaFiMediaCaption

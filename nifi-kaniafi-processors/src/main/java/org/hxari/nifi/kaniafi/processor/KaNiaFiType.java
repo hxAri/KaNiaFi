@@ -22,8 +22,6 @@ public enum KaNiaFiType {
 	EXPLORE( "explore:grid" ),
 	EXPLORE_CLIP( "explore:clip" ),
 	EXPLORE_CLIP_MEDIA( "explore:clip-media" ),
-	// EXPLORE_CLIP_ITEM( "ExploreClipItem" ),
-	// EXPLORE_FILL_ITEM( "ExploreFillItem" ),
 	EXPLORE_FILL_MEDIA( "explore:fill-media" ),
 	EXPLORE_LAYOUT( "explore:layout" ),
 	EXPLORE_SECTION( "explore:section" ),
@@ -50,6 +48,15 @@ public enum KaNiaFiType {
 
 	private KaNiaFiType( String type ) {
 		this.type = type;
+	}
+
+	public static KaNiaFiType of( String value ) {
+		for( KaNiaFiType type : KaNiaFiType.values() ) {
+			if( type.value().equalsIgnoreCase( value ) ) {
+				return type;
+			}
+		}
+		return null;
 	}
 
 	@Override

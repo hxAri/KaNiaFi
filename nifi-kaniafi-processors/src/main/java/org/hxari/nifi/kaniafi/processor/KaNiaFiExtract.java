@@ -44,19 +44,20 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Tags({ "extract", "instagram", "kanashī", "kaniafi", "request", "response" })
 @CapabilityDescription( "Extracting the results of Kanashī requests, as well as validating the FlowFIle content" )
-@SeeAlso({ KaNiaFiBranching.class })
+@SeeAlso({ KaNiaFiExtractUser.class })
 @ReadsAttributes({ @ReadsAttribute( attribute="x", description="X" ) })
 @WritesAttributes({ @WritesAttribute( attribute="y", description="Y" ) })
 public class KaNiaFiExtract extends AbstractProcessor {
 
-	public static final PropertyDescriptor ALLOW_SET_ATTRIBUTE_PROPERTY = new PropertyDescriptor.Builder()
+	final public static PropertyDescriptor ALLOW_SET_ATTRIBUTE_PROPERTY = new PropertyDescriptor.Builder()
 			.name( "allow.set.attribute" )
 			.displayName( "Allow Set Attributes" )
 			.description( "Allow the processor to set attributes automatically." )
@@ -65,7 +66,7 @@ public class KaNiaFiExtract extends AbstractProcessor {
 			.addValidator( StandardValidators.BOOLEAN_VALIDATOR )
 			.build();
 	
-	public static final PropertyDescriptor CHARSET_PROPERTY = new PropertyDescriptor.Builder()
+	final public static PropertyDescriptor CHARSET_PROPERTY = new PropertyDescriptor.Builder()
 			.name( "charset" )
 			.displayName( "Character Set" )
 			.description( "Specify Charset of FlowFile content when transfering into another processor." )
@@ -74,7 +75,7 @@ public class KaNiaFiExtract extends AbstractProcessor {
 			.addValidator( StandardValidators.CHARACTER_SET_VALIDATOR )
 			.build();
 	
-	public static final PropertyDescriptor DATETIME_FORMAT_PROPERTY = new PropertyDescriptor.Builder()
+	final public static PropertyDescriptor DATETIME_FORMAT_PROPERTY = new PropertyDescriptor.Builder()
 			.name( "datetime.format" )
 			.displayName( "Datetime Format" )
 			.description( "Convert Unix Timestamp to Datetime format." )
@@ -83,7 +84,7 @@ public class KaNiaFiExtract extends AbstractProcessor {
 			.addValidator( StandardValidators.NON_EMPTY_VALIDATOR )
 			.build();
 	
-	public static final PropertyDescriptor TIMEZONE_ID_PROPERTY = new PropertyDescriptor.Builder()
+	final public static PropertyDescriptor TIMEZONE_ID_PROPERTY = new PropertyDescriptor.Builder()
 			.name( "timezone.id" )
 			.displayName( "Timezone Id" )
 			.description( "Adjust datetime to time zone." )
@@ -92,34 +93,34 @@ public class KaNiaFiExtract extends AbstractProcessor {
 			.addValidator( StandardValidators.NON_EMPTY_VALIDATOR )
 			.build();
 
-	public static final Relationship CHECKPOINT_RELATIONSHIP = new Relationship.Builder()
+	final public static Relationship CHECKPOINT_RELATIONSHIP = new Relationship.Builder()
 			.name( "checkpoint" )
 			.description( "Checkpointed request." )
 			.autoTerminateDefault( true )
 			.build();
 	
-	public static final Relationship FAILURE_RELATIONSHIP = new Relationship.Builder()
+	final public static Relationship FAILURE_RELATIONSHIP = new Relationship.Builder()
 			.name( "failure" )
 			.description( "Failed parse flowfile content." )
 			.build();
 	
-	public static final Relationship INVALID_RELATIONSHIP = new Relationship.Builder()
+	final public static Relationship INVALID_RELATIONSHIP = new Relationship.Builder()
 			.name( "invalid" )
 			.description( "Invalid request url." )
 			.build();
 	
-	public static final Relationship SUCCESS_RELATIONSHIP = new Relationship.Builder()
+	final public static Relationship SUCCESS_RELATIONSHIP = new Relationship.Builder()
 			.name( "success" )
 			.description( "The results of the request sent and the response received match." )
 			.build();
 	
-	public static final Relationship UNAUTHORIZED_RELATIONSHIP = new Relationship.Builder()
+	final public static Relationship UNAUTHORIZED_RELATIONSHIP = new Relationship.Builder()
 			.name( "unauthorized" )
 			.description( "The request was not authenticated." )
 			.autoTerminateDefault( true )
 			.build();
 	
-	public static final Relationship UNPARSED_RELATIONSHIP = new Relationship.Builder()
+	final public static Relationship UNPARSED_RELATIONSHIP = new Relationship.Builder()
 			.name( "unparsed" )
 			.description( "Failed to parse request response." )
 			.autoTerminateDefault( true )
@@ -168,88 +169,89 @@ public class KaNiaFiExtract extends AbstractProcessor {
 	@Override
 	public void onTrigger( final ProcessContext context, final ProcessSession session ) {
 		FlowFile flowFile = session.get();
-		if( flowFile == null ) {
-			return;
-		}
-		ComponentLog logger = getLogger();
-		Relationship relationship = null;
-		ObjectMapper objectMapper = new ObjectMapper();
-		InputStream inputStream = session.read( flowFile );
-		HashMap<String, String> attributes = new HashMap<>();
-		try {
-			JsonNode rootNode = objectMapper.readTree( inputStream );
-			JsonNode requestNode = rootNode.get( "request" );
-			JsonNode responseNode = rootNode.get( "response" );
-			JsonNode contentNode = responseNode.get( "content" );
-			String content = contentNode.toString();
-			JsonNode targetNode = rootNode.get( "target" );
-			String target = targetNode.asText();
-			if( target.matches( URL_PATTERN ) ) {
-				JsonNode statusNode = responseNode.get( "status" );
-				if( statusNode.asText().matches( UNAUTHORIZED_PATTERN ) ) {
-					relationship = UNAUTHORIZED_RELATIONSHIP;
-					logger.debug( "Request {} is Unauthorized {}", new Object[]{ target, flowFile }  );
+		if( flowFile != null ) {
+			ComponentLog logger = getLogger();
+			Relationship relationship = null;
+			ObjectMapper objectMapper = new ObjectMapper();
+			InputStream inputStream = session.read( flowFile );
+			Map<String, String> attributes = new LinkedHashMap<>();
+			try {
+				JsonNode rootNode = objectMapper.readTree( inputStream );
+				JsonNode requestNode = rootNode.get( "request" );
+				JsonNode responseNode = rootNode.get( "response" );
+				JsonNode contentNode = responseNode.get( "content" );
+				String content = contentNode.toString();
+				JsonNode targetNode = rootNode.get( "target" );
+				String target = targetNode.asText();
+				if( target.matches( URL_PATTERN ) ) {
+					JsonNode statusNode = responseNode.get( "status" );
+					if( statusNode.asText().matches( UNAUTHORIZED_PATTERN ) ) {
+						relationship = UNAUTHORIZED_RELATIONSHIP;
+						logger.debug( "Request {} is Unauthorized {}", new Object[]{ target, flowFile }  );
+					}
+					else {
+						try {
+							objectMapper.readTree( content );
+							JsonNode checkpointUrl = contentNode.get( "checkpoint_url" );
+							if( checkpointUrl != null ) {
+								attributes.put( "checkpoint.url", checkpointUrl.asText() );
+								attributes.put( "checkpoint.lock", contentNode.get( "lock" ).asText() );
+								relationship = CHECKPOINT_RELATIONSHIP;
+								logger.debug( "Request {} is Checkpointed {}", new Object[]{ target, flowFile } );
+							}
+							else {
+								relationship = SUCCESS_RELATIONSHIP;
+							}
+						}
+						catch( IOException e ) {
+							relationship = UNPARSED_RELATIONSHIP;
+							logger.debug( "Failed to parse request response from {} {}", new Object[]{ target, flowFile } );
+						}
+					}
+					attributes.put( "url", targetNode.asText() );
+					attributes.put( "browser", rootNode.get( "browser" ).asText() );
+					attributes.put( "unixtime", rootNode.get( "unixtime" ).asText() );
+					attributes.put( "request", requestNode.toString() );
+					attributes.put( "request.body", requestNode.get( "body" ).toString() );
+					attributes.put( "request.query", requestNode.get( "query" ).toString() );
+					attributes.put( "request.cookies", requestNode.get( "cookies" ).toString() );
+					attributes.put( "request.headers", requestNode.get( "headers" ).toString() );
+					attributes.put( "response", responseNode.toString() );
+					attributes.put( "response.cookies", responseNode.get( "cookies" ).toString() );
+					attributes.put( "response.headers", responseNode.get( "headers" ).toString() );
+					attributes.put( "datetime", KaNiaFi.normalizeUnixTimestamp(
+						rootNode.get( "unixtime" ).asDouble(), 
+						context.getProperty( DATETIME_FORMAT_PROPERTY ).getValue(),
+						context.getProperty( TIMEZONE_ID_PROPERTY ).getValue()
+					));
 				}
 				else {
-					try {
-						objectMapper.readTree( content );
-						JsonNode checkpointUrl = contentNode.get( "checkpoint_url" );
-						if( checkpointUrl != null ) {
-							attributes.put( "checkpoint.url", checkpointUrl.asText() );
-							attributes.put( "checkpoint.lock", contentNode.get( "lock" ).asText() );
-							relationship = CHECKPOINT_RELATIONSHIP;
-							logger.debug( "Request {} is Checkpointed {}", new Object[]{ target, flowFile } );
-						}
-						else {
-							relationship = SUCCESS_RELATIONSHIP;
-						}
-					}
-					catch( IOException e ) {
-						relationship = UNPARSED_RELATIONSHIP;
-						logger.debug( "Failed to parse request response from {} {}", new Object[]{ target, flowFile } );
-					}
+					relationship = INVALID_RELATIONSHIP;
 				}
-				attributes.put( "url", targetNode.asText() );
-				attributes.put( "browser", rootNode.get( "browser" ).asText() );
-				attributes.put( "unixtime", rootNode.get( "unixtime" ).asText() );
-				attributes.put( "request", requestNode.toString() );
-				attributes.put( "request.body", requestNode.get( "body" ).toString() );
-				attributes.put( "request.query", requestNode.get( "query" ).toString() );
-				attributes.put( "request.cookies", requestNode.get( "cookies" ).toString() );
-				attributes.put( "request.headers", requestNode.get( "headers" ).toString() );
-				attributes.put( "response", responseNode.toString() );
-				attributes.put( "response.cookies", responseNode.get( "cookies" ).toString() );
-				attributes.put( "response.headers", responseNode.get( "headers" ).toString() );
-				attributes.put( "datetime", KaNiaFi.normalizeUnixTimestamp(
-					rootNode.get( "unixtime" ).asDouble(), 
-					context.getProperty( DATETIME_FORMAT_PROPERTY ).getValue(),
-					context.getProperty( TIMEZONE_ID_PROPERTY ).getValue()
-				));
+				FlowFile results = session.write( flowFile, new StreamCallback() {
+						@Override
+						public void process( InputStream in, OutputStream out ) throws IOException {
+							out.write( content.getBytes( Charset.forName( context.getProperty( CHARSET_PROPERTY ).getValue() ) ) );
+						}
+					}
+				);
+				if( context.getProperty( ALLOW_SET_ATTRIBUTE_PROPERTY ).asBoolean() ) {
+					results = session.putAllAttributes( results, attributes );
+					logger.info( "Successfully added Attributes {} into {}", new Object[]{
+						attributes,
+						results
+					});
+				}
+				session.transfer( results, relationship );
+				session.commit();
+				return;
 			}
-			else {
-				relationship = INVALID_RELATIONSHIP;
+			catch( Exception e ) {
+				if( e instanceof IOException ) {
+					logger.error( "Failed to parse FlowFile contents {}", new Object[] { flowFile } );
+				}
+				session.transfer( flowFile, FAILURE_RELATIONSHIP );
 			}
-			FlowFile results = session.write( flowFile, new StreamCallback() {
-                    @Override
-                    public void process( InputStream in, OutputStream out ) throws IOException {
-						out.write( content.getBytes( Charset.forName( context.getProperty( CHARSET_PROPERTY ).getValue() ) ) );
-                    }
-                }
-			);
-			if( context.getProperty( ALLOW_SET_ATTRIBUTE_PROPERTY ).asBoolean() ) {
-				results = session.putAllAttributes( results, attributes );
-				logger.info( "Successfully added Attributes {} into {}", new Object[]{
-					attributes,
-					results
-				});
-			}
-			session.transfer( results, relationship );
-			session.commit();
-			return;
-		}
-		catch( IOException e ) {
-			logger.error( "Failed to parse FlowFile contents {}", new Object[] { flowFile } );
-			session.transfer( flowFile, FAILURE_RELATIONSHIP );
 		}
 	}
 	

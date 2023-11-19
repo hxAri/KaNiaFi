@@ -1,0 +1,42 @@
+{
+	"anyOf": [
+		{
+			"type": "object",
+			"additionalProperties": true,
+			"properties": {
+				"id": {
+					"anyof": [
+						{ "type": "integer" },
+						{ "type": "string" }
+					]
+				},
+				"username": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"id",
+				"username"
+			]
+		},
+		{
+			"type": "object",
+			"additionalProperties": true,
+			"properties": {
+				"pk": {
+					"anyof": [
+						{ "type": "integer" },
+						{ "type": "string" }
+					]
+				},
+				"username": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"id",
+				"username"
+			]
+		}
+	]
+}
