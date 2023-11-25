@@ -1,5 +1,241 @@
 [
 	{
+		"type": "comment",
+		"scheme": {
+			"type": "object",
+			"additionalProperties": true,
+			"properties": {
+				"pk": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": "string" }
+					]
+				},
+				"user_id": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": "string" }
+					]
+				},
+				"type": {
+					"type": "number"
+				},
+				"created_at": {
+					"type": "integer"
+				},
+				"created_at_utc": {
+					"type": "number"
+				},
+				"content_type": {
+					"type": "string"
+				},
+				"media_id": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": "string" }
+					]
+				},
+				"parent_comment_id": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": "string" }
+					]
+				},
+				"user": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {
+						"pk": {
+							"anyOf": [
+								{ "type": "integer" },
+								{ "type": "string" }
+							]
+						},
+						"full_name": {
+							"type": "string"
+						},
+						"is_private": {
+							"type": "boolean"
+						},
+						"username": {
+							"type": "string"
+						},
+						"profile_pic_id": {
+							"type": "string"
+						},
+						"profile_pic_url": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"pk",
+						"username"
+					]
+				},
+				"text": {
+					"anyOf": [
+						{ "type": "null" },
+						{ "type": "string" }
+					]
+				},
+				"replied_to_comment_id": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": "string" }
+					]
+				}
+			},
+			"required": [
+				"created_at",
+				"pk",
+				"text",
+				"user"
+			]
+		}
+	},
+	{
+		"type": "direct:inbox",
+		"scheme": {
+			"type": "object",
+			"additionalProperties": true,
+			"properties": {
+				"has_pending_top_requests": {
+					"type": "boolean"
+				},
+				"inbox": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"blended_inbox_enabled": {
+							"type": "boolean"
+						},
+						"has_older": {
+							"type": "boolean"
+						},
+						"next_cursor": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"cursor_timestamp_seconds": {
+									"anyOf": [
+										{ "type": "integer" },
+										{ "type": "string" }
+									]
+								},
+								"cursor_relevancy_score": {
+									"anyOf": [
+										{ "type": "integer" },
+										{ "type": "string" }
+									]
+								},
+								"cursor_thread_v2_id": {
+									"anyOf": [
+										{ "type": "integer" },
+										{ "type": "string" }
+									]
+								}
+							},
+							"required": [
+								"cursor_timestamp_seconds",
+								"cursor_relevancy_score",
+								"cursor_thread_v2_id"
+							]
+						},
+						"prev_cursor": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"cursor_timestamp_seconds": {
+									"type": "number"
+								},
+								"cursor_relevancy_score": {
+									"type": "number"
+								},
+								"cursor_thread_v2_id": {
+									"anyOf": [
+										{ "type": "integer" },
+										{ "type": "string" }
+									]
+								}
+							},
+							"required": [
+								"cursor_timestamp_seconds",
+								"cursor_relevancy_score",
+								"cursor_thread_v2_id"
+							]
+						},
+						"threads": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"additionalProperties": true,
+								"properties": {
+								}
+							}
+						},
+						"unseen_count": {
+							"type": "number"
+						},
+						"unseen_count_ts": {
+							"type": "number"
+						}
+					},
+					"required": [
+						"blended_inbox_enabled",
+						"has_older",
+						"next_cursor",
+						"prev_cursor",
+						"threads",
+						"unseen_count"
+					]
+				},
+				"pending_requests_total": {
+					"type": "number"
+				},
+				"seq_id": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": "string" }
+					]
+				},
+				"snapshot_at_ms": {
+					"type": "number"
+				},
+				"viewer": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {
+						"full_name": {
+							"type": "string"
+						},
+						"pk": {
+							"anyof": [
+								{ "type": "integer" },
+								{ "type": "string" }
+							]
+						},
+						"username": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"full_name",
+						"pk",
+						"username"
+					]
+				}
+			},
+			"required": [
+				"has_pending_top_requests",
+				"inbox",
+				"pending_requests_total",
+				"seq_id",
+				"snapshot_at_ms",
+				"viewer"
+			]
+		}
+	},
+	{
 		"type": "explore:grid",
 		"scheme": {
 			"type": "object",
@@ -153,7 +389,12 @@
 				"session_paging_token": {
 					"type": "string"
 				}
-			}
+			},
+			"required": [
+				"max_id",
+				"next_max_id",
+				"sectional_items"
+			]
 		}
 	},
 	{
@@ -537,518 +778,25 @@
 	{
 		"type": "explore:clip-media",
 		"scheme": {
-			"anyOf": [
-				{
-					"type": "array",
-					"items": {
-						"type": "object",
-						"additionalProperties": true,
-						"properties": {
-							"can_see_insights_as_brand": {
-								"type": "boolean"
-							},
-							"can_view_more_preview_comments": {
-								"type": "boolean"
-							},
-							"can_viewer_reshare": {
-								"type": "boolean"
-							},
-							"can_viewer_save": {
-								"type": "boolean"
-							},
-							"caption": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {
-									"created_at": {
-										"type": "integer"
-									},
-									"created_at_utc": {
-										"type": "number"
-									},
-									"medican_view_more_preview_commentsa_id": {
-										"anyOf": [
-											{
-												"type": "integer"
-											},
-											{
-												"type": "string"
-											}
-										]
-									},
-									"pk": {
-										"anyOf": [
-											{
-												"type": "integer"
-											},
-											{
-												"type": "string"
-											}
-										]
-									}
-								}
-							},
-							"caption_is_edited": {
-								"type": "boolean"
-							},
-							"client_cache_key": {
-								"type": "string"
-							},
-							"clips_delivery_parameters": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
-							},
-							"clips_metadata": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
-							},
-							"code": {
-								"type": "string"
-							},
-							"comment_count": {
-								"type": "number"
-							},
-							"comment_inform_treatment": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
-							},
-							"comment_likes_enabled": {
-								"type": "boolean"
-							},
-							"comment_threading_enabled": {
-								"type": "boolean"
-							},
-							"comments": {
-								"type": "array",
-								"items": {
-									"type": "object",
-									"additionalProperties": true,
-									"properties": {
-										"created_at": {
-											"type": "integer"
-										},
-										"created_at_utc": {
-											"type": "number"
-										},
-										"pk": {
-											"anyOf": [
-												{
-													"type": "integer"
-												},
-												{
-													"type": "string"
-												}
-											]
-										},
-										"text": {
-											"anyOf": [
-												{
-													"type": "null"
-												},
-												{
-													"type": "string"
-												}
-											]
-										},
-										"user_id": {
-											"anyOf": [
-												{
-													"type": "integer"
-												},
-												{
-													"type": "string"
-												}
-											]
-										},
-										"user": {
-											"type": "object",
-											"additionalProperties": true,
-											"properties": {
-												"pk": {
-													"anyOf": [
-														{
-															"type": "integer"
-														},
-														{
-															"type": "string"
-														}
-													]
-												},
-												"username": {
-													"type": "string"
-												}
-											}
-										}
-									}
-								}
-							},
-							"commerciality_status": {
-								"type": "string"
-							},
-							"deleted_reason": {
-								"type": "integer"
-							},
-							"device_timestamp": {
-								"type": "number"
-							},
-							"enable_media_notes_production": {
-								"type": "boolean"
-							},
-							"enable_waist": {
-								"type": "boolean"
-							},
-							"explore_hide_comments": {
-								"type": "boolean"
-							},
-							"facepile_top_likers": {
-								"type": "array",
-								"items": {
-									"type": "object",
-									"additionalProperties": true,
-									"properties": {}
-								}
-							},
-							"fb_user_tags": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
-							},
-							"filter_type": {
-								"type": "integer"
-							},
-							"has_audio": {
-								"type": "boolean"
-							},
-							"has_delayed_metadata": {
-								"type": "boolean"
-							},
-							"has_liked": {
-								"type": "boolean"
-							},
-							"has_more_comments": {
-								"type": "boolean"
-							},
-							"has_shared_to_fb": {
-								"anyOf": [
-									{ "type": "boolean" },
-									{ "type": "integer" }
-								]
-							},
-							"hide_view_all_comment_entrypoint": {
-								"type": "boolean"
-							},
-							"id": {
-								"type": "string"
-							},
-							"ig_media_sharing_disabled": {
-								"type": "boolean"
-							},
-							"image_versions2": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
-							},
-							"integrity_review_decision": {
-								"type": "string"
-							},
-							"inventory_source": {
-								"type": "string"
-							},
-							"is_artist_pick": {
-								"type": "boolean"
-							},
-							"is_auto_created": {
-								"type": "boolean"
-							},
-							"is_comments_gif_composer_enabled": {
-								"type": "boolean"
-							},
-							"is_cutout_sticker_allowed": {
-								"type": "boolean"
-							},
-							"is_dash_eligible": {
-								"anyOf": [
-									{ "type": "boolean" },
-									{ "type": "integer" }
-								]
-							},
-							"is_in_profile_grid": {
-								"type": "boolean"
-							},
-							"is_open_to_public_submission": {
-								"type": "boolean"
-							},
-							"is_organic_product_tagging_eligible": {
-								"type": "boolean"
-							},
-							"is_paid_partnership": {
-								"type": "boolean"
-							},
-							"is_post_live_clips_media": {
-								"type": "boolean"
-							},
-							"is_reshare_of_text_post_app_media_in_ig": {
-								"type": "boolean"
-							},
-							"is_third_party_downloads_eligible": {
-								"type": "boolean"
-							},
-							"is_unified_video": {
-								"type": "boolean"
-							},
-							"is_visual_reply_commenter_notice_enabled": {
-								"type": "boolean"
-							},
-							"like_and_view_counts_disabled": {
-								"type": "boolean"
-							},
-							"like_count": {
-								"type": "number"
-							},
-							"logging_info_token": {
-								"type": "string"
-							},
-							"max_num_visible_preview_comments": {
-								"type": "integer"
-							},
-							"media_appreciation_settings": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
-							},
-							"media_cropping_info": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
-							},
-							"media_notes": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
-							},
-							"media_type": {
-								"type": "integer"
-							},
-							"mezql_token": {
-								"type": "string"
-							},
-							"music_metadata": {
-								"anyOf": [
-									{
-										"type": "null"
-									},
-									{
-										"type": "object",
-										"additionalProperties": true,
-										"properties": {}
-									}
-								]
-							},
-							"next_max_id": {
-								"anyOf": [
-									{
-										"type": "integer"
-									},
-									{
-										"type": "string"
-									}
-								]
-							},
-							"number_of_qualities": {
-								"type": "integer"
-							},
-							"organic_tracking_token": {
-								"type": "string"
-							},
-							"original_height": {
-								"type": "integer"
-							},
-							"original_media_has_visual_reply_media": {
-								"type": "boolean"
-							},
-							"original_width": {
-								"type": "integer"
-							},
-							"owner": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
-							},
-							"pk": {
-								"anyOf": [
-									{
-										"type": "integer"
-									},
-									{
-										"type": "string"
-									}
-								]
-							},
-							"play_count": {
-								"type": "number"
-							},
-							"preview_comments": {
-								"type": "array",
-								"items": {
-									"type": "object",
-									"additionalProperties": true,
-									"properties": {
-										"created_at": {
-											"type": "integer"
-										},
-										"created_at_utc": {
-											"type": "number"
-										},
-										"pk": {
-											"anyOf": [
-												{
-													"type": "integer"
-												},
-												{
-													"type": "string"
-												}
-											]
-										},
-										"text": {
-											"anyOf": [
-												{
-													"type": "null"
-												},
-												{
-													"type": "string"
-												}
-											]
-										},
-										"user_id": {
-											"anyOf": [
-												{
-													"type": "integer"
-												},
-												{
-													"type": "string"
-												}
-											]
-										},
-										"user": {
-											"type": "object",
-											"additionalProperties": true,
-											"properties": {
-												"pk": {
-													"anyOf": [
-														{
-															"type": "integer"
-														},
-														{
-															"type": "string"
-														}
-													]
-												},
-												"username": {
-													"type": "string"
-												}
-											}
-										}
-									},
-									"required": [
-										"pk",
-										"user"
-									]
-								}
-							},
-							"product_type": {
-								"type": "string"
-							},
-							"profile_grid_control_enabled": {
-								"type": "boolean"
-							},
-							"recommendation_data": {
-								"type": "string"
-							},
-							"sharing_friction_info": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
-							},
-							"should_request_ads": {
-								"type": "boolean"
-							},
-							"strong_id__": {
-								"type": "string"
-							},
-							"taken_at": {
-								"type": "integer"
-							},
-							"top_likers": {
-								"type": "array",
-								"items": {
-									"type": "object",
-									"additionalProperties": true,
-									"properties": {}
-								}
-							},
-							"user": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {
-									"id": {
-										"anyOf": [
-											{
-												"type": "integer"
-											},
-											{
-												"type": "string"
-											}
-										]
-									},
-									"pk": {
-										"anyOf": [
-											{
-												"type": "integer"
-											},
-											{
-												"type": "string"
-											}
-										]
-									},
-									"username": {
-										"type": "string"
-									}
-								},
-								"required": [
-									"id",
-									"pk",
-									"username"
-								]
-							}
-						},
-						"required": [
-							"code",
-							"id",
-							"pk",
-							"user"
-						]
-					}
+			"type": "object",
+			"additionalProperties": true,
+			"properties": {
+				"can_see_insights_as_brand": {
+					"type": "boolean"
 				},
-				{
-					"type": "object",
-					"additionalProperties": true,
-					"properties": {
-						"can_see_insights_as_brand": {
-							"type": "boolean"
-						},
-						"can_view_more_preview_comments": {
-							"type": "boolean"
-						},
-						"can_viewer_reshare": {
-							"type": "boolean"
-						},
-						"can_viewer_save": {
-							"type": "boolean"
-						},
-						"caption": {
+				"can_view_more_preview_comments": {
+					"type": "boolean"
+				},
+				"can_viewer_reshare": {
+					"type": "boolean"
+				},
+				"can_viewer_save": {
+					"type": "boolean"
+				},
+				"caption": {
+					"anyOf": [
+						{ "type": "null" },
+						{
 							"type": "object",
 							"additionalProperties": true,
 							"properties": {
@@ -1079,52 +827,85 @@
 									]
 								}
 							}
-						},
-						"caption_is_edited": {
-							"type": "boolean"
-						},
-						"client_cache_key": {
-							"type": "string"
-						},
-						"clips_delivery_parameters": {
-							"type": "object",
-							"additionalProperties": true,
-							"properties": {}
-						},
-						"clips_metadata": {
-							"type": "object",
-							"additionalProperties": true,
-							"properties": {}
-						},
-						"code": {
-							"type": "string"
-						},
-						"comment_count": {
-							"type": "number"
-						},
-						"comment_inform_treatment": {
-							"type": "object",
-							"additionalProperties": true,
-							"properties": {}
-						},
-						"comment_likes_enabled": {
-							"type": "boolean"
-						},
-						"comment_threading_enabled": {
-							"type": "boolean"
-						},
-						"comments": {
-							"type": "array",
-							"items": {
+						}
+					]
+				},
+				"caption_is_edited": {
+					"type": "boolean"
+				},
+				"client_cache_key": {
+					"type": "string"
+				},
+				"clips_delivery_parameters": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {}
+				},
+				"clips_metadata": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {}
+				},
+				"code": {
+					"type": "string"
+				},
+				"comment_count": {
+					"type": "number"
+				},
+				"comment_inform_treatment": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {}
+				},
+				"comment_threading_enabled": {
+					"type": "boolean"
+				},
+				"comments": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": true,
+						"properties": {
+							"created_at": {
+								"type": "integer"
+							},
+							"created_at_utc": {
+								"type": "number"
+							},
+							"pk": {
+								"anyOf": [
+									{
+										"type": "integer"
+									},
+									{
+										"type": "string"
+									}
+								]
+							},
+							"text": {
+								"anyOf": [
+									{
+										"type": "null"
+									},
+									{
+										"type": "string"
+									}
+								]
+							},
+							"user_id": {
+								"anyOf": [
+									{
+										"type": "integer"
+									},
+									{
+										"type": "string"
+									}
+								]
+							},
+							"user": {
 								"type": "object",
 								"additionalProperties": true,
 								"properties": {
-									"created_at": {
-										"type": "integer"
-									},
-									"created_at_utc": {
-										"type": "number"
-									},
 									"pk": {
 										"anyOf": [
 											{
@@ -1135,17 +916,266 @@
 											}
 										]
 									},
-									"text": {
-										"anyOf": [
-											{
-												"type": "null"
-											},
-											{
-												"type": "string"
-											}
-										]
+									"username": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				},
+				"commerciality_status": {
+					"type": "string"
+				},
+				"deleted_reason": {
+					"type": "integer"
+				},
+				"device_timestamp": {
+					"type": "number"
+				},
+				"enable_media_notes_production": {
+					"type": "boolean"
+				},
+				"enable_waist": {
+					"type": "boolean"
+				},
+				"explore_hide_comments": {
+					"type": "boolean"
+				},
+				"facepile_top_likers": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": true,
+						"properties": {}
+					}
+				},
+				"fb_user_tags": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {}
+				},
+				"filter_type": {
+					"type": "integer"
+				},
+				"has_audio": {
+					"type": "boolean"
+				},
+				"has_delayed_metadata": {
+					"type": "boolean"
+				},
+				"has_liked": {
+					"type": "boolean"
+				},
+				"has_more_comments": {
+					"type": "boolean"
+				},
+				"has_shared_to_fb": {
+					"anyOf": [
+						{ "type": "boolean" },
+						{ "type": "integer" }
+					]
+				},
+				"hide_view_all_comment_entrypoint": {
+					"type": "boolean"
+				},
+				"id": {
+					"type": "string"
+				},
+				"ig_media_sharing_disabled": {
+					"type": "boolean"
+				},
+				"image_versions2": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {}
+				},
+				"integrity_review_decision": {
+					"type": "string"
+				},
+				"inventory_source": {
+					"type": "string"
+				},
+				"is_artist_pick": {
+					"type": "boolean"
+				},
+				"is_auto_created": {
+					"type": "boolean"
+				},
+				"is_comments_gif_composer_enabled": {
+					"type": "boolean"
+				},
+				"is_cutout_sticker_allowed": {
+					"type": "boolean"
+				},
+				"is_dash_eligible": {
+					"anyOf": [
+						{ "type": "boolean" },
+						{ "type": "integer" }
+					]
+				},
+				"is_in_profile_grid": {
+					"type": "boolean"
+				},
+				"is_open_to_public_submission": {
+					"type": "boolean"
+				},
+				"is_organic_product_tagging_eligible": {
+					"type": "boolean"
+				},
+				"is_paid_partnership": {
+					"type": "boolean"
+				},
+				"is_post_live_clips_media": {
+					"type": "boolean"
+				},
+				"is_reshare_of_text_post_app_media_in_ig": {
+					"type": "boolean"
+				},
+				"is_third_party_downloads_eligible": {
+					"type": "boolean"
+				},
+				"is_unified_video": {
+					"type": "boolean"
+				},
+				"is_visual_reply_commenter_notice_enabled": {
+					"type": "boolean"
+				},
+				"like_and_view_counts_disabled": {
+					"type": "boolean"
+				},
+				"like_count": {
+					"type": "number"
+				},
+				"logging_info_token": {
+					"type": "string"
+				},
+				"max_num_visible_preview_comments": {
+					"type": "integer"
+				},
+				"media_appreciation_settings": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {}
+				},
+				"media_cropping_info": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {}
+				},
+				"media_notes": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {}
+				},
+				"media_type": {
+					"type": "integer"
+				},
+				"mezql_token": {
+					"type": "string"
+				},
+				"music_metadata": {
+					"anyOf": [
+						{
+							"type": "null"
+						},
+						{
+							"type": "object",
+							"additionalProperties": true,
+							"properties": {}
+						}
+					]
+				},
+				"next_max_id": {
+					"anyOf": [
+						{
+							"type": "integer"
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"number_of_qualities": {
+					"type": "integer"
+				},
+				"organic_tracking_token": {
+					"type": "string"
+				},
+				"original_height": {
+					"type": "integer"
+				},
+				"original_media_has_visual_reply_media": {
+					"type": "boolean"
+				},
+				"original_width": {
+					"type": "integer"
+				},
+				"owner": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {}
+				},
+				"pk": {
+					"anyOf": [
+						{
+							"type": "integer"
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"play_count": {
+					"type": "number"
+				},
+				"preview_comments": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": true,
+						"properties": {
+							"created_at": {
+								"type": "integer"
+							},
+							"created_at_utc": {
+								"type": "number"
+							},
+							"pk": {
+								"anyOf": [
+									{
+										"type": "integer"
 									},
-									"user_id": {
+									{
+										"type": "string"
+									}
+								]
+							},
+							"text": {
+								"anyOf": [
+									{
+										"type": "null"
+									},
+									{
+										"type": "string"
+									}
+								]
+							},
+							"user_id": {
+								"anyOf": [
+									{
+										"type": "integer"
+									},
+									{
+										"type": "string"
+									}
+								]
+							},
+							"user": {
+								"type": "object",
+								"additionalProperties": true,
+								"properties": {
+									"pk": {
 										"anyOf": [
 											{
 												"type": "integer"
@@ -1155,191 +1185,52 @@
 											}
 										]
 									},
-									"user": {
-										"type": "object",
-										"additionalProperties": true,
-										"properties": {
-											"pk": {
-												"anyOf": [
-													{
-														"type": "integer"
-													},
-													{
-														"type": "string"
-													}
-												]
-											},
-											"username": {
-												"type": "string"
-											}
-										}
+									"username": {
+										"type": "string"
 									}
 								}
 							}
 						},
-						"commerciality_status": {
-							"type": "string"
-						},
-						"deleted_reason": {
-							"type": "integer"
-						},
-						"device_timestamp": {
-							"type": "number"
-						},
-						"enable_media_notes_production": {
-							"type": "boolean"
-						},
-						"enable_waist": {
-							"type": "boolean"
-						},
-						"explore_hide_comments": {
-							"type": "boolean"
-						},
-						"facepile_top_likers": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
-							}
-						},
-						"fb_user_tags": {
-							"type": "object",
-							"additionalProperties": true,
-							"properties": {}
-						},
-						"filter_type": {
-							"type": "integer"
-						},
-						"has_audio": {
-							"type": "boolean"
-						},
-						"has_delayed_metadata": {
-							"type": "boolean"
-						},
-						"has_liked": {
-							"type": "boolean"
-						},
-						"has_more_comments": {
-							"type": "boolean"
-						},
-						"has_shared_to_fb": {
-							"anyOf": [
-								{ "type": "boolean" },
-								{ "type": "integer" }
-							]
-						},
-						"hide_view_all_comment_entrypoint": {
-							"type": "boolean"
-						},
+						"required": [
+							"pk",
+							"user"
+						]
+					}
+				},
+				"product_type": {
+					"type": "string"
+				},
+				"profile_grid_control_enabled": {
+					"type": "boolean"
+				},
+				"recommendation_data": {
+					"type": "string"
+				},
+				"sharing_friction_info": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {}
+				},
+				"should_request_ads": {
+					"type": "boolean"
+				},
+				"strong_id__": {
+					"type": "string"
+				},
+				"taken_at": {
+					"type": "integer"
+				},
+				"top_likers": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"user": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {
 						"id": {
-							"type": "string"
-						},
-						"ig_media_sharing_disabled": {
-							"type": "boolean"
-						},
-						"image_versions2": {
-							"type": "object",
-							"additionalProperties": true,
-							"properties": {}
-						},
-						"integrity_review_decision": {
-							"type": "string"
-						},
-						"inventory_source": {
-							"type": "string"
-						},
-						"is_artist_pick": {
-							"type": "boolean"
-						},
-						"is_auto_created": {
-							"type": "boolean"
-						},
-						"is_comments_gif_composer_enabled": {
-							"type": "boolean"
-						},
-						"is_cutout_sticker_allowed": {
-							"type": "boolean"
-						},
-						"is_dash_eligible": {
-							"anyOf": [
-								{ "type": "boolean" },
-								{ "type": "integer" }
-							]
-						},
-						"is_in_profile_grid": {
-							"type": "boolean"
-						},
-						"is_open_to_public_submission": {
-							"type": "boolean"
-						},
-						"is_organic_product_tagging_eligible": {
-							"type": "boolean"
-						},
-						"is_paid_partnership": {
-							"type": "boolean"
-						},
-						"is_post_live_clips_media": {
-							"type": "boolean"
-						},
-						"is_reshare_of_text_post_app_media_in_ig": {
-							"type": "boolean"
-						},
-						"is_third_party_downloads_eligible": {
-							"type": "boolean"
-						},
-						"is_unified_video": {
-							"type": "boolean"
-						},
-						"is_visual_reply_commenter_notice_enabled": {
-							"type": "boolean"
-						},
-						"like_and_view_counts_disabled": {
-							"type": "boolean"
-						},
-						"like_count": {
-							"type": "number"
-						},
-						"logging_info_token": {
-							"type": "string"
-						},
-						"max_num_visible_preview_comments": {
-							"type": "integer"
-						},
-						"media_appreciation_settings": {
-							"type": "object",
-							"additionalProperties": true,
-							"properties": {}
-						},
-						"media_cropping_info": {
-							"type": "object",
-							"additionalProperties": true,
-							"properties": {}
-						},
-						"media_notes": {
-							"type": "object",
-							"additionalProperties": true,
-							"properties": {}
-						},
-						"media_type": {
-							"type": "integer"
-						},
-						"mezql_token": {
-							"type": "string"
-						},
-						"music_metadata": {
-							"anyOf": [
-								{
-									"type": "null"
-								},
-								{
-									"type": "object",
-									"additionalProperties": true,
-									"properties": {}
-								}
-							]
-						},
-						"next_max_id": {
 							"anyOf": [
 								{
 									"type": "integer"
@@ -1348,26 +1239,6 @@
 									"type": "string"
 								}
 							]
-						},
-						"number_of_qualities": {
-							"type": "integer"
-						},
-						"organic_tracking_token": {
-							"type": "string"
-						},
-						"original_height": {
-							"type": "integer"
-						},
-						"original_media_has_visual_reply_media": {
-							"type": "boolean"
-						},
-						"original_width": {
-							"type": "integer"
-						},
-						"owner": {
-							"type": "object",
-							"additionalProperties": true,
-							"properties": {}
 						},
 						"pk": {
 							"anyOf": [
@@ -1379,150 +1250,22 @@
 								}
 							]
 						},
-						"play_count": {
-							"type": "number"
-						},
-						"preview_comments": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {
-									"created_at": {
-										"type": "integer"
-									},
-									"created_at_utc": {
-										"type": "number"
-									},
-									"pk": {
-										"anyOf": [
-											{
-												"type": "integer"
-											},
-											{
-												"type": "string"
-											}
-										]
-									},
-									"text": {
-										"anyOf": [
-											{
-												"type": "null"
-											},
-											{
-												"type": "string"
-											}
-										]
-									},
-									"user_id": {
-										"anyOf": [
-											{
-												"type": "integer"
-											},
-											{
-												"type": "string"
-											}
-										]
-									},
-									"user": {
-										"type": "object",
-										"additionalProperties": true,
-										"properties": {
-											"pk": {
-												"anyOf": [
-													{
-														"type": "integer"
-													},
-													{
-														"type": "string"
-													}
-												]
-											},
-											"username": {
-												"type": "string"
-											}
-										}
-									}
-								},
-								"required": [
-									"pk",
-									"user"
-								]
-							}
-						},
-						"product_type": {
+						"username": {
 							"type": "string"
-						},
-						"profile_grid_control_enabled": {
-							"type": "boolean"
-						},
-						"recommendation_data": {
-							"type": "string"
-						},
-						"sharing_friction_info": {
-							"type": "object",
-							"additionalProperties": true,
-							"properties": {}
-						},
-						"should_request_ads": {
-							"type": "boolean"
-						},
-						"strong_id__": {
-							"type": "string"
-						},
-						"taken_at": {
-							"type": "integer"
-						},
-						"top_likers": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
-							}
-						},
-						"user": {
-							"type": "object",
-							"additionalProperties": true,
-							"properties": {
-								"id": {
-									"anyOf": [
-										{
-											"type": "integer"
-										},
-										{
-											"type": "string"
-										}
-									]
-								},
-								"pk": {
-									"anyOf": [
-										{
-											"type": "integer"
-										},
-										{
-											"type": "string"
-										}
-									]
-								},
-								"username": {
-									"type": "string"
-								}
-							},
-							"required": [
-								"id",
-								"pk",
-								"username"
-							]
 						}
 					},
 					"required": [
-						"code",
 						"id",
 						"pk",
-						"user"
+						"username"
 					]
 				}
+			},
+			"required": [
+				"code",
+				"id",
+				"pk",
+				"user"
 			]
 		}
 	},
@@ -1914,9 +1657,7 @@
 							"top_likers": {
 								"type": "array",
 								"items": {
-									"type": "object",
-									"additionalProperties": true,
-									"properties": {}
+									"type": "string"
 								}
 							},
 							"user": {
@@ -2343,9 +2084,7 @@
 						"top_likers": {
 							"type": "array",
 							"items": {
-								"type": "object",
-								"additionalProperties": true,
-								"properties": {}
+								"type": "string"
 							}
 						},
 						"user": {
@@ -2393,11 +2132,486 @@
 		}
 	},
 	{
-		"type": "profile",
+		"type": "friendship:status",
 		"scheme": {
 			"type": "object",
+			"additionalProperties": true,
+			"properties": {
+				"blocking": {
+					"type": "boolean"
+				},
+				"followed_by": {
+					"type": "boolean"
+				},
+				"following": {
+					"type": "boolean"
+				},
+				"incoming_request": {
+					"type": "boolean"
+				},
+				"is_bestie": {
+					"type": "boolean"
+				},
+				"is_blocking_reel": {
+					"type": "boolean"
+				},
+				"is_muting_reel": {
+					"type": "boolean"
+				},
+				"is_private": {
+					"type": "boolean"
+				},
+				"is_restricted": {
+					"type": "boolean"
+				},
+				"muting": {
+					"type": "boolean"
+				},
+				"outgoing_request": {
+					"type": "boolean"
+				},
+				"is_feed_favorite": {
+					"type": "boolean"
+				},
+				"subscribed": {
+					"type": "boolean"
+				},
+				"is_eligible_to_subscribe": {
+					"type": "boolean"
+				},
+				"is_supervised_by_viewer": {
+					"type": "boolean"
+				},
+				"is_guardian_of_viewer": {
+					"type": "boolean"
+				},
+				"is_muting_notes": {
+					"type": "boolean"
+				},
+				"is_muting_media_notes": {
+					"type": "boolean"
+				}
+			},
+			"required": [
+				"following",
+				"followed_by",
+				"blocking",
+				"muting",
+				"is_private",
+				"incoming_request",
+				"outgoing_request",
+				"is_bestie",
+				"is_restricted",
+				"is_feed_favorite"
+			]
+		}
+	},
+	{
+		"type": "friendship:many",
+		"scheme": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"friendship_statuses": {
+					"type": "object",
+					"patternProperties": {
+						"^(?:[0-9])(?:[0-9]+)?$": {
+							"type": "object",
+							"properties": {
+								"blocking": {
+									"type": "boolean"
+								},
+								"followed_by": {
+									"type": "boolean"
+								},
+								"following": {
+									"type": "boolean"
+								},
+								"incoming_request": {
+									"type": "boolean"
+								},
+								"is_bestie": {
+									"type": "boolean"
+								},
+								"is_blocking_reel": {
+									"type": "boolean"
+								},
+								"is_muting_reel": {
+									"type": "boolean"
+								},
+								"is_private": {
+									"type": "boolean"
+								},
+								"is_restricted": {
+									"type": "boolean"
+								},
+								"muting": {
+									"type": "boolean"
+								},
+								"outgoing_request": {
+									"type": "boolean"
+								},
+								"is_feed_favorite": {
+									"type": "boolean"
+								},
+								"subscribed": {
+									"type": "boolean"
+								},
+								"is_eligible_to_subscribe": {
+									"type": "boolean"
+								},
+								"is_supervised_by_viewer": {
+									"type": "boolean"
+								},
+								"is_guardian_of_viewer": {
+									"type": "boolean"
+								},
+								"is_muting_notes": {
+									"type": "boolean"
+								},
+								"is_muting_media_notes": {
+									"type": "boolean"
+								}
+							},
+							"required": [
+								"following",
+								"followed_by",
+								"blocking",
+								"muting",
+								"is_private",
+								"incoming_request",
+								"outgoing_request",
+								"is_bestie",
+								"is_restricted",
+								"is_feed_favorite"
+							]
+						}
+					},
+					"required": true
+				},
+				"status": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"friendship_statuses"
+			]
+		}
+	},
+	{
+		"type": "news:inbox",
+		"scheme": {
+			"type": "object",
+			"properties": {
+				"continuation_token": {
+					"anyOf": [
+						{
+							"type": "integer"
+						},
+						{
+							"type": "string"
+						}
+					]
+				},
+				"counts": {
+					"type": "object",
+					"properties": {
+						"activity_feed_dot_badge": {
+							"type": "number"
+						},
+						"activity_feed_dot_badge_only": {
+							"type": "number"
+						},
+						"campaign_notification": {
+							"type": "number"
+						},
+						"comment_likes": {
+							"type": "number"
+						},
+						"comments": {
+							"type": "number"
+						},
+						"fundraiser": {
+							"type": "number"
+						},
+						"likes": {
+							"type": "number"
+						},
+						"new_posts": {
+							"type": "number"
+						},
+						"photos_of_you": {
+							"type": "number"
+						},
+						"promotional": {
+							"type": "number"
+						},
+						"relationships": {
+							"type": "number"
+						},
+						"requests": {
+							"type": "number"
+						},
+						"shopping_notification": {
+							"type": "number"
+						},
+						"usertags": {
+							"type": "number"
+						}
+					},
+					"required": [
+						"activity_feed_dot_badge",
+						"activity_feed_dot_badge_only",
+						"campaign_notification",
+						"comment_likes",
+						"comments",
+						"fundraiser",
+						"likes",
+						"new_posts",
+						"photos_of_you",
+						"promotional",
+						"relationships",
+						"requests",
+						"shopping_notification",
+						"usertags"
+					]
+				},
+				"is_last_page": {
+					"type": "boolean"
+				},
+				"last_checked": {
+					"type": "number"
+				},
+				"new_stories": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": true,
+						"properties": {
+							"args": {
+								"type": "object",
+								"additionalProperties": true,
+								"properties": {}
+							},
+							"counts": {
+								"type": "object",
+								"additionalProperties": true,
+								"properties": {}
+							},
+							"notif_name": {
+								"type": "string"
+							},
+							"pk": {
+								"type": "string"
+							},
+							"story_type": {
+								"type": "number"
+							},
+							"type": {
+								"type": "number"
+							}
+						},
+						"required": [
+							"args",
+							"pk",
+							"story_type",
+							"type"
+						]
+					}
+				},
+				"old_stories": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": true,
+						"properties": {
+							"args": {
+								"type": "object",
+								"additionalProperties": true,
+								"properties": {}
+							},
+							"counts": {
+								"type": "object",
+								"additionalProperties": true,
+								"properties": {}
+							},
+							"notif_name": {
+								"type": "string"
+							},
+							"pk": {
+								"type": "string"
+							},
+							"story_type": {
+								"type": "number"
+							},
+							"type": {
+								"type": "number"
+							}
+						},
+						"required": [
+							"args",
+							"pk",
+							"story_type",
+							"type"
+						]
+					}
+				},
+				"partition": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"time_bucket": {
+							"type": "object",
+							"additionalProperties": false,
+							"properties": {
+								"headers": {
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								},
+								"indices": {
+									"type": "array",
+									"items": {
+										"type": "integer"
+									}
+								}
+							},
+							"required": [
+								"headers",
+								"indices"
+							]
+						}
+					},
+					"required": [
+						"time_bucket"
+					]
+				},
+				"priority_stories": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": true,
+						"properties": {
+							"args": {
+								"type": "object",
+								"additionalProperties": true,
+								"properties": {}
+							},
+							"counts": {
+								"type": "object",
+								"additionalProperties": true,
+								"properties": {}
+							},
+							"notif_name": {
+								"type": "string"
+							},
+							"pk": {
+								"type": "string"
+							},
+							"story_type": {
+								"type": "number"
+							},
+							"type": {
+								"type": "number"
+							}
+						},
+						"required": [
+							"args",
+							"pk",
+							"story_type",
+							"type"
+						]
+					}
+				}
+			},
+			"required": [
+				"continuation_token",
+				"counts",
+				"is_last_page",
+				"last_checked",
+				"new_stories",
+				"old_stories",
+				"partition"
+			]
+		}
+	},
+	{
+		"type": "pending:follow",
+		"scheme": {
+			"type": "object",
+			"additionalProperties": true,
+			"properties": {
+				"big_list": {
+					"type": "boolean"
+				},
+				"friend_requests": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {
+					}
+				},
+				"next_max_id": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": "null" },
+						{ "type": "string" }
+					]
+				},
+				"page_size": {
+					"type": "number"
+				},
+				"suggested_users": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {
+					}
+				},
+				"users": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": true,
+						"properties": {
+							"full_name": {
+								"type": "string"
+							},
+							"pk": {
+								"anyof": [
+									{ "type": "integer" },
+									{ "type": "string" }
+								]
+							},
+							"username": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"full_name",
+							"pk",
+							"username"
+						]
+					}
+				}
+			},
+			"required": [
+				"big_list",
+				"friend_requests",
+				"global_blacklist_sample",
+				"next_max_id",
+				"page_size",
+				"sections",
+				"suggested_users",
+				"users"
+			]
+		}
+	},
+	{
+		"type": "profile",
+		"scheme": {
 			"anyOf": [
 				{
+					"type": "object",
 					"properties": {
 						"data": {
 							"type": "object",
@@ -2405,6 +2619,9 @@
 								"user": {
 									"type": "object",
 									"properties": {
+										"full_name": {
+											"type": "string"
+										},
 										"id": {
 											"anyOf": [
 												{
@@ -2430,6 +2647,7 @@
 										}
 									},
 									"required": [
+										"full_name",
 										"username"
 									]
 								}
@@ -2444,6 +2662,7 @@
 					]
 				},
 				{
+					"type": "object",
 					"properties": {
 						"graphql": {
 							"type": "object",
@@ -2451,6 +2670,9 @@
 								"user": {
 									"type": "object",
 									"properties": {
+										"full_name": {
+											"type": "string"
+										},
 										"id": {
 											"anyOf": [
 												{
@@ -2476,6 +2698,7 @@
 										}
 									},
 									"required": [
+										"full_name",
 										"username"
 									]
 								}
@@ -2490,10 +2713,19 @@
 					]
 				},
 				{
+					"type": "object",
+					"additionalProperties": false,
 					"properties": {
+						"status": {
+							"type": "string"
+						},
 						"user": {
 							"type": "object",
+							"additionalProperties": true,
 							"properties": {
+								"full_name": {
+									"type": "string"
+								},
 								"id": {
 									"anyOf": [
 										{
@@ -2519,11 +2751,13 @@
 								}
 							},
 							"required": [
+								"full_name",
 								"username"
 							]
 						}
 					},
 					"required": [
+						"status",
 						"user"
 					]
 				}
@@ -2714,6 +2948,9 @@
 					"type": "object",
 					"additionalProperties": true,
 					"properties": {
+						"full_name": {
+							"type": "string"
+						},
 						"id": {
 							"anyof": [
 								{ "type": "integer" },
@@ -2726,6 +2963,7 @@
 					},
 					"required": [
 						"id",
+						"full_name",
 						"username"
 					]
 				},
@@ -2733,6 +2971,9 @@
 					"type": "object",
 					"additionalProperties": true,
 					"properties": {
+						"full_name": {
+							"type": "string"
+						},
 						"pk": {
 							"anyof": [
 								{ "type": "integer" },
@@ -2744,10 +2985,124 @@
 						}
 					},
 					"required": [
-						"id",
+						"full_name",
+						"pk",
 						"username"
 					]
 				}
+			]
+		}
+	},
+	{
+		"type": "user:feed",
+		"scheme": {
+			"type": "object",
+			"additionalProperties": true,
+			"properties": {
+				"auto_load_more_enabled": {
+					"type": "boolean"
+				},
+				"items": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"additionalProperties": true,
+						"properties": {
+							"code": {
+								"type": "string"
+							},
+							"id": {
+								"anyOf": [
+									{ "type": "integer" },
+									{ "type": "string" }
+								]
+							},
+							"media_type": {
+								"type": "integer"
+							},
+							"pk": {
+								"anyOf": [
+									{ "type": "integer" },
+									{ "type": "string" }
+								]
+							},
+							"product_type": {
+								"type": "string"
+							},
+							"taken_at": {
+								"type": "number"
+							},
+							"user": {
+								"type": "object",
+								"additionalProperties": true,
+								"properties": {
+									"full_name": {
+										"type": "string"
+									},
+									"pk": {
+										"anyOf": [
+											{ "type": "integer" },
+											{ "type": "string" }
+										]
+									},
+									"username": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"full_name",
+									"pk",
+									"username"
+								]
+							}
+						},
+						"required": [
+							"code",
+							"id",
+							"media_type",
+							"pk",
+							"product_type",
+							"taken_at",
+							"user"
+						]
+					}
+				},
+				"more_available": {
+					"type": "boolean"
+				},
+				"num_results": {
+					"type": "number"
+				},
+				"user": {
+					"type": "object",
+					"additionalProperties": true,
+					"properties": {
+						"full_name": {
+							"type": "string"
+						},
+						"pk": {
+							"anyOf": [
+								{ "type": "integer" },
+								{ "type": "string" }
+							]
+						},
+						"username": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"full_name",
+						"pk",
+						"username"
+					]
+				}
+			},
+			"required": [
+				"auto_load_more_enabled",
+				"items",
+				"more_available",
+				"num_results",
+				"user"
 			]
 		}
 	}

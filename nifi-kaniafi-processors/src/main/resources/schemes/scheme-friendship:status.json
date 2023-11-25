@@ -1,0 +1,74 @@
+{
+	"type": "friendship:status",
+	"scheme": {
+		"type": "object",
+		"properties": {
+			"blocking": {
+				"type": "boolean"
+			},
+            "followed_by": {
+				"type": "boolean"
+			},
+            "following": {
+				"type": "boolean"
+			},
+            "incoming_request": {
+				"type": "boolean"
+			},
+            "is_bestie": {
+				"type": "boolean"
+			},
+            "is_blocking_reel": {
+				"type": "boolean"
+			},
+            "is_muting_reel": {
+				"type": "boolean"
+			},
+            "is_private": {
+				"type": "boolean"
+			},
+            "is_restricted": {
+				"type": "boolean"
+			},
+            "muting": {
+				"type": "boolean"
+			},
+            "outgoing_request": {
+				"type": "boolean"
+			},
+            "is_feed_favorite": {
+				"type": "boolean"
+			},
+            "subscribed": {
+				"type": "boolean"
+			},
+            "is_eligible_to_subscribe": {
+				"type": "boolean"
+			},
+            "is_supervised_by_viewer": {
+				"type": "boolean"
+			},
+            "is_guardian_of_viewer": {
+				"type": "boolean"
+			},
+            "is_muting_notes": {
+				"type": "boolean"
+			},
+            "is_muting_media_notes": {
+				"type": "boolean"
+			}
+		},
+		"required": [
+			"following",
+			"followed_by",
+			"blocking",
+			"muting",
+			"is_private",
+			"incoming_request",
+			"outgoing_request",
+			"is_bestie",
+			"is_restricted",
+			"is_feed_favorite"
+		]
+	}
+}

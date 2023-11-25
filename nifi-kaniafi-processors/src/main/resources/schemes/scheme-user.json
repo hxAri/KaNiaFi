@@ -1,42 +1,53 @@
 {
-	"anyOf": [
-		{
-			"type": "object",
-			"additionalProperties": true,
-			"properties": {
-				"id": {
-					"anyof": [
-						{ "type": "integer" },
-						{ "type": "string" }
-					]
+	"type": "user",
+	"schema": {
+		"anyOf": [
+			{
+				"type": "object",
+				"additionalProperties": true,
+				"properties": {
+					"full_name": {
+						"type": "string"
+					},
+					"id": {
+						"anyof": [
+							{ "type": "integer" },
+							{ "type": "string" }
+						]
+					},
+					"username": {
+						"type": "string"
+					}
 				},
-				"username": {
-					"type": "string"
-				}
+				"required": [
+					"id",
+					"full_name",
+					"username"
+				]
 			},
-			"required": [
-				"id",
-				"username"
-			]
-		},
-		{
-			"type": "object",
-			"additionalProperties": true,
-			"properties": {
-				"pk": {
-					"anyof": [
-						{ "type": "integer" },
-						{ "type": "string" }
-					]
+			{
+				"type": "object",
+				"additionalProperties": true,
+				"properties": {
+					"full_name": {
+						"type": "string"
+					},
+					"pk": {
+						"anyof": [
+							{ "type": "integer" },
+							{ "type": "string" }
+						]
+					},
+					"username": {
+						"type": "string"
+					}
 				},
-				"username": {
-					"type": "string"
-				}
-			},
-			"required": [
-				"id",
-				"username"
-			]
-		}
-	]
+				"required": [
+					"full_name",
+					"pk",
+					"username"
+				]
+			}
+		]
+	}
 }

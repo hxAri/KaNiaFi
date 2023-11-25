@@ -1,0 +1,94 @@
+{
+	"type": "comment",
+	"scheme": {
+		"type": "object",
+		"additionalProperties": true,
+		"properties": {
+			"pk": {
+				"anyOf": [
+					{ "type": "integer" },
+					{ "type": "string" }
+				]
+			},
+			"user_id": {
+				"anyOf": [
+					{ "type": "integer" },
+					{ "type": "string" }
+				]
+			},
+			"type": {
+				"type": "number"
+			},
+			"created_at": {
+				"type": "integer"
+			},
+			"created_at_utc": {
+				"type": "number"
+			},
+			"content_type": {
+				"type": "string"
+			},
+			"media_id": {
+				"anyOf": [
+					{ "type": "integer" },
+					{ "type": "string" }
+				]
+			},
+			"parent_comment_id": {
+				"anyOf": [
+					{ "type": "integer" },
+					{ "type": "string" }
+				]
+			},
+			"user": {
+				"type": "object",
+				"additionalProperties": true,
+				"properties": {
+					"pk": {
+						"anyOf": [
+							{ "type": "integer" },
+							{ "type": "string" }
+						]
+					},
+					"full_name": {
+						"type": "string"
+					},
+					"is_private": {
+						"type": "boolean"
+					},
+					"username": {
+						"type": "string"
+					},
+					"profile_pic_id": {
+						"type": "string"
+					},
+					"profile_pic_url": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"pk",
+					"username"
+				]
+			},
+			"text": {
+				"anyOf": [
+					{ "type": "null" },
+					{ "type": "string" }
+				]
+			},
+			"replied_to_comment_id": {
+				"anyOf": [
+					{ "type": "integer" },
+					{ "type": "string" }
+				]
+			}
+		},
+		"required": [
+			"created_at",
+			"pk",
+			"text",
+			"user"
+		]
+	}
+}
